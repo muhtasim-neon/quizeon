@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quizeon</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Quizeon</h1>
+  <div class="score-timer">
+    <div>Time Left: <span id="time">15</span>s</div>
+    <div>Score: <span id="score">0</span></div>
+  </div>
+  <div class="lives">Lives Left: <span id="lives">3</span></div>
+  <div class="card" id="quizCard">
+    <div id="hiraganaSide">あ</div>
+    <div class="romaji" id="romajiSide">a</div>
+  </div>
+  <div class="input-section">
+    <input type="text" id="userInput" placeholder="Enter romaji" />
+    <button onclick="checkAnswer()">Check</button>
+  </div>
+  <div class="result-msg" id="resultMsg"></div>
+  <div class="high-score">Highest Score: <span id="highScore">0</span></div>
+  <button class="restart-btn" onclick="restartGame()">Restart Game</button>
+
+  <audio id="correctSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+  <audio id="wrongSound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
