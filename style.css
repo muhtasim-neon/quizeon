@@ -1,9 +1,9 @@
 body {
-      background-color: #0e0e16;
+      background-color: #060a1f;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     .glass {
-      background: rgba(17, 18, 39, 0.85);
+      background: #060a1f;
       backdrop-filter: blur(12px);
       border-radius: 1rem;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
