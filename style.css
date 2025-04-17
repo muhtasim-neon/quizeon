@@ -1,140 +1,29 @@
-:root {
-  --bg-dark: #0f172a;
-  --card-dark: #1e293b;
-  --accent: #7dd3fc;
-  --input-bg: #334155;
-  --correct: #22c55e;
-  --wrong: #ef4444;
-  --button-bg: #38bdf8;
-  --button-text: #f8fafc;
-  --restart-bg: #f59e0b;
-}
-
 body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, var(--bg-dark), #1e293b);
-  color: #e2e8f0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  text-align: center;
-}
-
-h1 {
-  font-size: 2.7rem;
-  color: var(--accent);
-  margin-bottom: 12px;
-  text-shadow: 0 0 8px rgba(125, 211, 252, 0.4);
-}
-
-.score-timer {
-  display: flex;
-  gap: 30px;
-  margin-bottom: 22px;
-  font-size: 1.3rem;
-  color: #cbd5e1;
-}
-
-.card {
-  width: 240px;
-  height: 240px;
-  margin-bottom: 25px;
-  background: var(--card-dark);
-  border-radius: 18px;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 3.7rem;
-  font-weight: bold;
-  color: #f8fafc;
-  transition: all 0.4s ease;
-}
-
-.card.wrong {
-  background: var(--wrong);
-  color: white;
-}
-
-.card.correct {
-  background: var(--correct);
-  color: white;
-}
-
-.romaji {
-  font-size: 1.6rem;
-  margin-top: 10px;
-  display: none;
-}
-
-.input-section {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: center;
-  margin-bottom: 12px;
-}
-
-.input-section input {
-  padding: 12px;
-  font-size: 1rem;
-  border-radius: 8px;
-  border: 2px solid var(--input-bg);
-  background: var(--card-dark);
-  color: #f8fafc;
-  min-width: 200px;
-}
-
-.input-section button {
-  padding: 12px 20px;
-  font-size: 1rem;
-  border: none;
-  background: var(--button-bg);
-  color: var(--button-text);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.input-section button:hover {
-  background: #0ea5e9;
-}
-
-.result-msg {
-  font-size: 1.3rem;
-  min-height: 30px;
-  font-weight: bold;
-}
-
-.high-score {
-  font-size: 1rem;
-  margin-top: 10px;
-  color: #a5b4fc;
-}
-
-.lives {
-  font-size: 1.1rem;
-  color: #fca5a5;
-  margin-bottom: 10px;
-}
-
-.restart-btn {
-  margin-top: 20px;
-  padding: 10px 24px;
-  font-size: 1rem;
-  background: var(--restart-bg);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.restart-btn:hover {
-  background: #d97706;
-}
+      background-color: #0e0e16;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .glass {
+      background: rgba(17, 18, 39, 0.85);
+      backdrop-filter: blur(12px);
+      border-radius: 1rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+    .shake {
+      animation: shake 0.4s ease-in-out;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      50% { transform: translateX(6px); }
+      75% { transform: translateX(-4px); }
+    }
+    .flash-green {
+      background-color: #16a34a !important;
+    }
+    .flash-red {
+      background-color: #dc2626 !important;
+    }
+    input::placeholder {
+      color: #cbd5e1;
+      opacity: 0.7;
+    }
