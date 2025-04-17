@@ -1,105 +1,140 @@
-const quizData = [
-  { hira: 'あ', romaji: 'a' }, { hira: 'い', romaji: 'i' }, { hira: 'う', romaji: 'u' }, { hira: 'え', romaji: 'e' }, { hira: 'お', romaji: 'o' },
-  { hira: 'か', romaji: 'ka' }, { hira: 'き', romaji: 'ki' }, { hira: 'く', romaji: 'ku' }, { hira: 'け', romaji: 'ke' }, { hira: 'こ', romaji: 'ko' },
-  { hira: 'さ', romaji: 'sa' }, { hira: 'し', romaji: 'shi' }, { hira: 'す', romaji: 'su' }, { hira: 'せ', romaji: 'se' }, { hira: 'そ', romaji: 'so' },
-  { hira: 'た', romaji: 'ta' }, { hira: 'ち', romaji: 'chi' }, { hira: 'つ', romaji: 'tsu' }, { hira: 'て', romaji: 'te' }, { hira: 'と', romaji: 'to' },
-  { hira: 'な', romaji: 'na' }, { hira: 'に', romaji: 'ni' }, { hira: 'ぬ', romaji: 'nu' }, { hira: 'ね', romaji: 'ne' }, { hira: 'の', romaji: 'no' },
-  { hira: 'は', romaji: 'ha' }, { hira: 'ひ', romaji: 'hi' }, { hira: 'ふ', romaji: 'fu' }, { hira: 'へ', romaji: 'he' }, { hira: 'ほ', romaji: 'ho' },
-  { hira: 'ま', romaji: 'ma' }, { hira: 'み', romaji: 'mi' }, { hira: 'む', romaji: 'mu' }, { hira: 'め', romaji: 'me' }, { hira: 'も', romaji: 'mo' },
-  { hira: 'や', romaji: 'ya' }, { hira: 'ゆ', romaji: 'yu' }, { hira: 'よ', romaji: 'yo' },
-  { hira: 'ら', romaji: 'ra' }, { hira: 'り', romaji: 'ri' }, { hira: 'る', romaji: 'ru' }, { hira: 'れ', romaji: 're' }, { hira: 'ろ', romaji: 'ro' },
-  { hira: 'わ', romaji: 'wa' }, { hira: 'を', romaji: 'wo' }, { hira: 'ん', romaji: 'n' }
-];
+const hiraganaBasic = [['あ','a'],['い','i'],['う','u'],['え','e'],['お','o'],['か','ka'],['き','ki'],['く','ku'],['け','ke'],['こ','ko'],['さ','sa'],['し','shi'],['す','su'],['せ','se'],['そ','so'],['た','ta'],['ち','chi'],['つ','tsu'],['て','te'],['と','to'],['な','na'],['に','ni'],['ぬ','nu'],['ね','ne'],['の','no'],['は','ha'],['ひ','hi'],['ふ','fu'],['へ','he'],['ほ','ho'],['ま','ma'],['み','mi'],['む','mu'],['め','me'],['も','mo'],['や','ya'],['ゆ','yu'],['よ','yo'],['ら','ra'],['り','ri'],['る','ru'],['れ','re'],['ろ','ro'],['わ','wa'],['を','wo'],['ん','n']];
+    const hiraganaDakuten = [['が','ga'],['ぎ','gi'],['ぐ','gu'],['げ','ge'],['ご','go'],['ざ','za'],['じ','ji'],['ず','zu'],['ぜ','ze'],['ぞ','zo'],['だ','da'],['ぢ','ji'],['づ','zu'],['で','de'],['ど','do'],['ば','ba'],['び','bi'],['ぶ','bu'],['べ','be'],['ぼ','bo'],['ぱ','pa'],['ぴ','pi'],['ぷ','pu'],['ぺ','pe'],['ぽ','po']];
+    const hiraganaYouon = [['きゃ','kya'],['きゅ','kyu'],['きょ','kyo'],['しゃ','sha'],['しゅ','shu'],['しょ','sho'],['ちゃ','cha'],['ちゅ','chu'],['ちょ','cho'],['にゃ','nya'],['にゅ','nyu'],['にょ','nyo'],['ひゃ','hya'],['ひゅ','hyu'],['ひょ','hyo'],['みゃ','mya'],['みゅ','myu'],['みょ','myo'],['りゃ','rya'],['りゅ','ryu'],['りょ','ryo'],['ぎゃ','gya'],['ぎゅ','gyu'],['ぎょ','gyo'],['じゃ','ja'],['じゅ','ju'],['じょ','jo'],['びゃ','bya'],['びゅ','byu'],['びょ','byo'],['ぴゃ','pya'],['ぴゅ','pyu'],['ぴょ','pyo']];
+    const kanaToKatakana = kana => kana.replace(/./g, ch => String.fromCharCode(ch.charCodeAt(0) + 0x60));
+    const katakanaBasic = hiraganaBasic.map(([k, r]) => [kanaToKatakana(k), r]);
+    const katakanaDakuten = hiraganaDakuten.map(([k, r]) => [kanaToKatakana(k), r]);
+    const katakanaYouon = hiraganaYouon.map(([k, r]) => [kanaToKatakana(k), r]);
 
-let current = {}, score = 0, highScore = 0, time = 15, timer;
-let lives = 3;
-
-const timeDisplay = document.getElementById("time");
-const scoreDisplay = document.getElementById("score");
-const card = document.getElementById("quizCard");
-const hira = document.getElementById("hiraganaSide");
-const romaji = document.getElementById("romajiSide");
-const userInput = document.getElementById("userInput");
-const resultMsg = document.getElementById("resultMsg");
-const highScoreDisplay = document.getElementById("highScore");
-const livesDisplay = document.getElementById("lives");
-const correctSound = document.getElementById("correctSound");
-const wrongSound = document.getElementById("wrongSound");
-
-function startTimer() {
-  time = 15;
-  timeDisplay.textContent = time;
-  timer = setInterval(() => {
-    time--;
-    timeDisplay.textContent = time;
-    if (time <= 0) {
-      clearInterval(timer);
-      handleWrong();
+    function getKanaSet(mode) {
+      switch (mode) {
+        case 1: return hiraganaBasic;
+        case 2: return [...hiraganaBasic, ...hiraganaDakuten, ...hiraganaYouon];
+        case 3: return katakanaBasic;
+        case 4: return [...katakanaBasic, ...katakanaDakuten, ...katakanaYouon];
+        case 5: return shuffle([...hiraganaBasic, ...katakanaBasic]);
+        case 6: return shuffle([...hiraganaBasic, ...katakanaBasic, ...hiraganaDakuten, ...katakanaDakuten, ...hiraganaYouon, ...katakanaYouon]);
+        default: return hiraganaBasic;
+      }
     }
-  }, 1000);
-}
 
-function showRomaji() {
-  romaji.style.display = "block";
-}
+    let currentMode = 1, kanaList = [], currentKana;
+    let score = 0, highScore = 0, lives = 3, timeLeft = 15, timer;
+    let gameOver = false;
 
-function nextCard() {
-  if (lives <= 0) return;
-  current = quizData[Math.floor(Math.random() * quizData.length)];
-  hira.textContent = current.hira;
-  romaji.textContent = current.romaji;
-  romaji.style.display = "none";
-  userInput.value = "";
-  card.classList.remove("correct", "wrong");
-  resultMsg.textContent = "";
-  clearInterval(timer);
-  startTimer();
-}
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
 
-function checkAnswer() {
-  if (lives <= 0) return;
-  clearInterval(timer);
-  const answer = userInput.value.trim().toLowerCase();
-  if (answer === current.romaji) {
-    card.classList.add("correct");
-    correctSound.play();
-    showRomaji();
-    score++;
-    resultMsg.textContent = "✅ Correct!";
-  } else {
-    handleWrong();
-    return;
-  }
-  scoreDisplay.textContent = score;
-  highScore = Math.max(score, highScore);
-  highScoreDisplay.textContent = highScore;
-  setTimeout(nextCard, 1000);
-}
+    function pause(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
 
-function handleWrong() {
-  card.classList.add("wrong");
-  wrongSound.play();
-  showRomaji();
-  resultMsg.textContent = "❌ Wrong!";
-  lives--;
-  livesDisplay.textContent = lives;
-  if (lives <= 0) {
-    resultMsg.textContent = "💀 Game Over! Please restart.";
-    return;
-  }
-  setTimeout(nextCard, 1000);
-}
+    function startGame(mode) {
+      document.getElementById('clickSound').play();
+      currentMode = mode;
+      kanaList = shuffle([...getKanaSet(mode)]);
+      score = 0;
+      lives = 10;
+      timeLeft = 15;
+      gameOver = false;
+      document.getElementById('score').textContent = score;
+      document.getElementById('lives').textContent = lives;
+      document.getElementById('resultMsg').textContent = '';
+      document.getElementById('modeSelector').classList.add('hidden');
+      document.getElementById('gameContainer').classList.remove('hidden');
+      nextQuestion();
+      startTimer();
+      document.getElementById('userInput').focus();
+    }
 
-function restartGame() {
-  lives = 3;
-  score = 0;
-  scoreDisplay.textContent = score;
-  livesDisplay.textContent = lives;
-  resultMsg.textContent = "";
-  nextCard();
-}
+    function goBack() {
+      clearInterval(timer);
+      document.getElementById('clickSound').play();
+      document.getElementById('gameContainer').classList.add('hidden');
+      document.getElementById('modeSelector').classList.remove('hidden');
+    }
 
-document.addEventListener("DOMContentLoaded", nextCard);
-userInput.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") checkAnswer();
-});
+    function restartGame() {
+      document.getElementById('clickSound').play();
+      startGame(currentMode);
+    }
+
+    function startTimer() {
+      clearInterval(timer);
+      timer = setInterval(() => {
+        if (!gameOver) {
+          timeLeft--;
+          document.getElementById('time').textContent = timeLeft;
+          if (timeLeft <= 0) {
+            clearInterval(timer);
+            handleIncorrect();
+          }
+        }
+      }, 1000);
+    }
+
+    function nextQuestion() {
+      if (kanaList.length === 0) kanaList = shuffle([...getKanaSet(currentMode)]);
+      currentKana = kanaList.pop();
+      document.getElementById('kanaChar').textContent = currentKana[0];
+      document.getElementById('romajiHint').classList.add('hidden');
+      document.getElementById('userInput').value = '';
+      document.getElementById('resultMsg').textContent = '';
+      timeLeft = 15;
+      document.getElementById('time').textContent = timeLeft;
+      startTimer();
+    }
+
+    async function handleCorrect() {
+      document.getElementById('correctSound').play();
+      const card = document.getElementById('kanaCard');
+      card.classList.add('flash-green');
+      document.getElementById('romajiHint').textContent = currentKana[1];
+      document.getElementById('romajiHint').classList.remove('hidden');
+      score++;
+      if (score > highScore) {
+        highScore = score;
+        document.getElementById('highScore').textContent = highScore;
+      }
+      document.getElementById('score').textContent = score;
+      //document.getElementById('resultMsg').textContent = '✅ Correct!';
+      await pause(1200);
+      card.classList.remove('flash-green');
+      document.getElementById('romajiHint').classList.add('hidden');
+      nextQuestion();
+    }
+
+    async function handleIncorrect() {
+      clearInterval(timer);
+      if (gameOver) return;
+      document.getElementById('wrongSound').play();
+      const card = document.getElementById('kanaCard');
+      card.classList.add('flash-red', 'shake');
+      document.getElementById('romajiHint').textContent = currentKana[1];
+      document.getElementById('romajiHint').classList.remove('hidden');
+      lives = Math.max(0, lives - 1);
+      document.getElementById('lives').textContent = lives;
+      //document.getElementById('resultMsg').textContent = `❌ Wrong!`;
+      await pause(1200);
+      card.classList.remove('flash-red', 'shake');
+      document.getElementById('romajiHint').classList.add('hidden');
+      if (lives <= 0) {
+        gameOver = true;
+        document.getElementById('kanaChar').textContent = 'Game Over';
+      } else {
+        nextQuestion();
+      }
+    }
+
+    document.getElementById('userInput').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !gameOver) {
+        const userAnswer = this.value.trim().toLowerCase();
+        if (userAnswer === currentKana[1]) handleCorrect();
+        else handleIncorrect();
+      }
+    });
