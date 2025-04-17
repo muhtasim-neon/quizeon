@@ -2,32 +2,56 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Quizeon</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-  <h1>Quizeon (Hiragana) </h1>
-  <div class="score-timer">
-    <div>Time Left: <span id="time">15</span>s</div>
-    <div>Score: <span id="score">0</span></div>
-  </div>
-  <div class="lives">Lives Left: <span id="lives">3</span></div>
-  <div class="card" id="quizCard">
-    <div id="hiraganaSide">あ</div>
-    <div class="romaji" id="romajiSide">a</div>
-  </div>
-  <div class="input-section">
-    <input type="text" id="userInput" placeholder="Enter romaji" />
-    <button onclick="checkAnswer()">Check</button>
-  </div>
-  <div class="result-msg" id="resultMsg"></div>
-  <div class="high-score">Highest Score: <span id="highScore">0</span></div>
-  <button class="restart-btn" onclick="restartGame()">Restart Game</button>
+<body class="text-white flex items-center justify-center min-h-screen p-4">
+  <div class="w-full max-w-2xl space-y-8">
+    <!-- Mode Selector -->
+    <div id="modeSelector" class="glass p-6 space-y-6">
+      <h1 class="text-4xl font-bold text-center">🎌 Quizeon 🎌 </h1>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <button onclick="startGame(1)" class="bg-blue-700 hover:bg-blue-600 p-4 rounded-xl transition">Hiragana (Basic)</button>
+        <button onclick="startGame(2)" class="bg-blue-700 hover:bg-blue-600 p-4 rounded-xl transition">Hiragana (All)</button>
+        <button onclick="startGame(3)" class="bg-blue-700 hover:bg-blue-600 p-4 rounded-xl transition">Katakana (Basic)</button>
+        <button onclick="startGame(4)" class="bg-blue-700 hover:bg-blue-600 p-4 rounded-xl transition">Katakana (All)</button>
+        <button onclick="startGame(5)" class="bg-blue-700 hover:bg-blue-600 p-4 rounded-xl transition">Mix (Basic)</button>
+        <button onclick="startGame(6)" class="bg-blue-700 hover:bg-blue-600 p-4 rounded-xl transition">Mix (All)</button>
+      </div>
+    </div>
 
+    <!-- Game UI -->
+    <div id="gameContainer" class="hidden glass p-6 space-y-6 text-center">
+      <div class="flex justify-between text-sm">
+        <div>Score: <span id="score">0</span></div>
+        <div>High Score: <span id="highScore">0</span></div>
+        <div>Lives: <span id="lives">3</span></div>
+        <div>Time: <span id="time">15</span>s</div>
+      </div>
+
+      <div id="kanaCard" class="relative text-7xl font-bold py-10 rounded-xl glass transition">
+        <span id="kanaChar"></span>
+        <div id="romajiHint" class="absolute bottom-2 right-4 text-base text-white/70 hidden"></div>
+      </div>
+
+      <input id="userInput" type="text" placeholder="Type romaji here..." class="w-full p-4 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-blue-500">
+
+      <div id="resultMsg" class="text-xl font-semibold"></div>
+
+      <div class="space-x-4">
+        <button onclick="restartGame()" class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded-xl">Restart</button>
+        <button onclick="goBack()" class="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-xl">Back</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sound Effects -->
   <audio id="correctSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
   <audio id="wrongSound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
-
+  <audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-28.mp3"></audio>
+  
   <script src="script.js"></script>
 </body>
 </html>
