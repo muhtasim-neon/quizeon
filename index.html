@@ -3,55 +3,1241 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Quizeon</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Quizeon - Japanese Learning</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-red: #c53d32;
+      --primary-blue: #2a4b8d;
+      --primary-gold: #d9a761;
+      --ink-black: #0a0a14;
+      --paper-beige: #f5f1e6;
+      --sakura-pink: #ffd7d7;
+      --bamboo-green: #6a8c5c;
+      --indigo-blue: #3f4464;
+    }
+    
+    body {
+      background-color: var(--ink-black);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--paper-beige);
+      background-image: 
+        radial-gradient(circle at 15% 50%, rgba(42, 65, 138, 0.15) 0%, transparent 35%),
+        radial-gradient(circle at 85% 30%, rgba(103, 28, 128, 0.1) 0%, transparent 35%),
+        url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.14-1.24 7.13-1.5 11-1.5 3.87 0 7.86.26 11 1.5 2.64 1.02 5 3.75 5 7 0 5-5 10-16 10S0 30 0 25c0-3.25 2.36-5.98 5-7h6z' fill='%23d9a76111' /%3E%3C/svg%3E");
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+    
+    .japanese-font {
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+    
+    .japanese-decorative {
+      font-family: 'Yuji Syuku', serif;
+    }
+    
+    .glass {
+      background: rgba(15, 16, 33, 0.75);
+      backdrop-filter: blur(16px);
+      border-radius: 12px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(217, 167, 97, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .glass::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-red), var(--primary-gold), var(--bamboo-green));
+      z-index: 10;
+    }
+    
+    .shake {
+      animation: shake 0.4s ease-in-out;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      50% { transform: translateX(6px); }
+      75% { transform: translateX(-4px); }
+    }
+    
+    .flash-green {
+      background-color: rgba(46, 125, 50, 0.3) !important;
+      box-shadow: 0 0 20px rgba(46, 125, 50, 0.5);
+    }
+    
+    .flash-red {
+      background-color: rgba(197, 61, 50, 0.3) !important;
+      box-shadow: 0 0 20px rgba(197, 61, 50, 0.5);
+    }
+    
+    input::placeholder {
+      color: #cbd5e1;
+      opacity: 0.7;
+    }
+    
+    .progress-bar {
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-red), var(--primary-gold));
+      transition: width 0.3s ease;
+    }
+    
+    .saved-card {
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border-left: 3px solid var(--primary-gold);
+    }
+    
+    .saved-card:hover {
+      background: rgba(197, 61, 50, 0.15);
+      transform: translateY(-2px);
+    }
+    
+    .mode-btn {
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 20px 16px;
+      border-radius: 10px;
+      background: rgba(42, 75, 141, 0.3);
+      border: 1px solid rgba(217, 167, 97, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .mode-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: 0.5s;
+    }
+    
+    .mode-btn:hover::before {
+      left: 100%;
+    }
+    
+    .mode-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      background: rgba(42, 75, 141, 0.4);
+      border-color: rgba(217, 167, 97, 0.3);
+    }
+    
+    .mode-icon {
+      font-size: 28px;
+      margin-bottom: 8px;
+      color: var(--primary-gold);
+    }
+    
+    .kana-card {
+      min-height: 240px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(20, 21, 40, 0.5);
+      border: 1px solid rgba(217, 167, 97, 0.2);
+      border-radius: 12px;
+      position: relative;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    .kana-card::after {
+      content: " ";
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 30px;
+      height: 30px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23d9a76144' d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      opacity: 0.5;
+    }
+    
+    .vocab-card {
+      min-height: 200px;
+      position: relative;
+      perspective: 1000px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      background: rgba(20, 21, 40, 0.5);
+      border: 1px solid rgba(217, 167, 97, 0.2);
+      border-radius: 12px;
+    }
+    
+    .card-inner {
+      min-height: 200px;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+    
+    .vocab-flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+    
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      border-radius: 12px;
+      background: rgba(20, 21, 40, 0.8);
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .card-front {
+      z-index: 2;
+    }
+    
+    .card-back {
+      transform: rotateY(180deg);
+      background: rgba(20, 21, 40, 0.9);
+    }
+    
+    .japanese-text {
+      font-size: 3.5rem;
+      font-weight: bold;
+      line-height: 1;
+      margin-bottom: 10px;
+      color: #fff;
+      font-family: 'Noto Sans JP', sans-serif;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    
+    .meaning-text {
+      font-size: 1.5rem;
+      color: var(--paper-beige);
+    }
+    
+    .reading-text {
+      font-size: 1.2rem;
+      color: var(--primary-gold);
+      margin-top: 10px;
+    }
+    
+    .hint-text {
+      position: absolute;
+      bottom: 10px;
+      right: 15px;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .action-btn {
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 500;
+      white-space: nowrap;
+      background: rgba(42, 75, 141, 0.4);
+      border: 1px solid rgba(217, 167, 97, 0.2);
+    }
+    
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      background: rgba(42, 75, 141, 0.5);
+      border-color: rgba(217, 167, 97, 0.3);
+    }
+    
+    .action-btn:active {
+      transform: scale(0.95);
+      box-shadow: none;
+    }
+    
+    .saved-container {
+      max-height: 250px;
+      overflow-y: auto;
+      padding-right: 5px;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    .saved-container::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .saved-container::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 3px;
+    }
+    
+    .saved-container::-webkit-scrollbar-thumb {
+      background: var(--primary-red);
+      border-radius: 3px;
+    }
+    
+    .pulse {
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .vocab-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 1.5rem;
+    }
+    
+    .vocab-actions button {
+      min-width: 100px;
+    }
+    
+    @media (min-width: 640px) {
+      .vocab-actions button {
+        min-width: auto;
+      }
+    }
+    
+    .vocab-list-container {
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 1rem;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.5rem;
+      border: 1px solid rgba(217, 167, 97, 0.1);
+    }
+    
+    .vocab-list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      border-radius: 6px;
+      background: rgba(26, 27, 47, 0.7);
+      transition: all 0.2s ease;
+      border-left: 3px solid var(--primary-red);
+    }
+    
+    .vocab-list-item:hover {
+      background: rgba(197, 61, 50, 0.15);
+      transform: translateX(4px);
+    }
+    
+    .vocab-list-japanese {
+      font-size: 1.5rem;
+      font-weight: bold;
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+    
+    .vocab-list-info {
+      text-align: right;
+    }
+    
+    .vocab-list-romaji {
+      color: var(--primary-gold);
+      font-size: 0.9rem;
+    }
+    
+    .vocab-list-meaning {
+      color: var(--paper-beige);
+    }
+    
+    .flip-icon {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.9rem;
+    }
+    
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 30px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--primary-red);
+      transition: .4s;
+      border-radius: 34px;
+    }
+    
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .toggle-slider {
+      background-color: var(--primary-gold);
+    }
+    
+    input:checked + .toggle-slider:before {
+      transform: translateX(30px);
+    }
+    
+    .toggle-label {
+      margin: 0 10px;
+      color: var(--paper-beige);
+    }
+    
+    .japanese-pattern {
+      background-image: 
+        url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.14-1.24 7.13-1.5 11-1.5 3.87 0 7.86.26 11 1.5 2.64 1.02 5 3.75 5 7 0 5-5 10-16 10S0 30 0 25c0-3.25 2.36-5.98 5-7h6z' fill='%23d9a76111' /%3E%3C/svg%3E");
+      background-attachment: fixed;
+    }
+    
+    .title-container {
+      position: relative;
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .title-container::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 25%;
+      right: 25%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--primary-gold), transparent);
+    }
+    
+    .sakura {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffd7d7' d='M12 18c0 .5.3.9.6 1.3.4.5.4 1.2.2 1.8-.2.5-.7.9-1.2.9-1.1 0-2.1-.5-2.8-1.3-.8-.8-1.3-1.9-1.3-3 0-.5.3-.9.6-1.3.4-.5.4-1.2.2-1.8-.2-.5-.7-.9-1.2-.9-1.1 0-2.1.5-2.8 1.3C3.5 16.1 3 17.2 3 18.4c0 1.2.5 2.3 1.3 3.1.8.8 1.9 1.3 3.1 1.3 1.2 0 2.3-.5 3.1-1.3.8-.8 1.3-1.9 1.3-3.1 0-.5-.1-1-.2-1.5-.2-.5-.5-1-.9-1.4-.4-.4-.9-.7-1.4-.9-.5-.2-1-.2-1.5-.2-.5 0-1 .1-1.5.2'/%3E%3C/svg%3E");
+      background-size: contain;
+      opacity: 0.6;
+      z-index: 0;
+      filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
+      animation: floating 8s ease-in-out infinite;
+    }
+    
+    .sakura:nth-child(1) {
+      animation-delay: 0s;
+      top: 10%;
+      left: 5%;
+    }
+    
+    .sakura:nth-child(2) {
+      animation-delay: 2s;
+      top: 15%;
+      right: 7%;
+    }
+    
+    .sakura:nth-child(3) {
+      animation-delay: 4s;
+      bottom: 20%;
+      left: 8%;
+    }
+    
+    .sakura:nth-child(4) {
+      animation-delay: 6s;
+      bottom: 15%;
+      right: 10%;
+    }
+    
+    @keyframes floating {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(10deg); }
+    }
+    
+    .wave-pattern {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z' opacity='.25' fill='%23d9a761'/%3E%3Cpath d='M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z' opacity='.5' fill='%23d9a761'/%3E%3Cpath d='M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z' fill='%23d9a761'/%3E%3C/svg%3E");
+      background-size: 1200px 100%;
+      opacity: 0.1;
+    }
+  </style>
 </head>
-<body class="text-white flex items-center justify-center min-h-screen p-4">
-  <div class="w-full max-w-2xl space-y-8">
-    <!-- Mode Selector -->
-    <div id="modeSelector" class="glass p-6 space-y-6">
-      <h1 class="text-4xl font-bold text-center">🎌 Quizeon 🎌 </h1>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <button onclick="startGame(1)" class="bg-blue-700 hover:bg-blue-600 p-4 rounded-xl transition">Hiragana (Basic)</button>
-        <button onclick="startGame(2)" class="bg-blue-700 hover:bg-blue-600 p-4 rounded-xl transition">Hiragana (All)</button>
-        <button onclick="startGame(3)" class="bg-blue-700 hover:bg-blue-600 p-4 rounded-xl transition">Katakana (Basic)</button>
-        <button onclick="startGame(4)" class="bg-blue-700 hover:bg-blue-600 p-4 rounded-xl transition">Katakana (All)</button>
-        <button onclick="startGame(5)" class="bg-blue-700 hover:bg-blue-600 p-4 rounded-xl transition">Mix (Basic)</button>
-        <button onclick="startGame(6)" class="bg-blue-700 hover:bg-blue-600 p-4 rounded-xl transition">Mix (All)</button>
+<body class="text-white japanese-pattern">
+  <!-- Decorative sakura blossoms -->
+  <div class="sakura"></div>
+  <div class="sakura"></div>
+  <div class="sakura"></div>
+  <div class="sakura"></div>
+  
+  <!-- Wave pattern at bottom -->
+  <div class="wave-pattern"></div>
+  
+  <div class="w-full max-w-4xl space-y-8 fade-in">
+    <div id="modeSelector" class="glass p-8 space-y-8">
+      <div class="flex flex-col items-center title-container">
+        <h1 class="text-5xl font-bold text-center mb-2 japanese-decorative bg-gradient-to-r from-red-400 to-yellow-500 bg-clip-text text-transparent">Quizeon</h1>
+        <p class="text-gray-400 mb-2 japanese-decorative">日本語の学習</p>
+        <p class="text-gray-400 text-sm">Master Japanese Kana and Vocabulary</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+        <button onclick="startGame(1)" class="mode-btn">
+          <i class="mode-icon fas fa-journal-whills"></i>
+          <span>Hiragana (Basic)</span>
+        </button>
+        <button onclick="startGame(2)" class="mode-btn">
+          <i class="mode-icon fas fa-book"></i>
+          <span>Hiragana (All)</span>
+        </button>
+        <button onclick="startGame(3)" class="mode-btn">
+          <i class="mode-icon fas fa-project-diagram"></i>
+          <span>Katakana (Basic)</span>
+        </button>
+        <button onclick="startGame(4)" class="mode-btn">
+          <i class="mode-icon fas fa-book-open"></i>
+          <span>Katakana (All)</span>
+        </button>
+        <button onclick="startGame(5)" class="mode-btn">
+          <i class="mode-icon fas fa-random"></i>
+          <span>Mix (Basic)</span>
+        </button>
+        <button onclick="startGame(6)" class="mode-btn">
+          <i class="mode-icon fas fa-shuffle"></i>
+          <span>Mix (All)</span>
+        </button>
+        <button onclick="showVocabMode()" class="mode-btn">
+          <i class="mode-icon fas fa-language"></i>
+          <span>Vocabulary</span>
+        </button>
+      </div>
+      
+      <div class="pt-4 text-center text-sm text-gray-500">
+        <p>Practice Japanese characters and build your vocabulary</p>
       </div>
     </div>
 
-    <!-- Game UI -->
-    <div id="gameContainer" class="hidden glass p-6 space-y-6 text-center">
+    <div id="gameContainer" class="hidden glass p-8 space-y-6 text-center">
       <div class="flex justify-between text-sm">
-        <div>Score: <span id="score">0</span></div>
-        <div>High Score: <span id="highScore">0</span></div>
-        <div>Lives: <span id="lives">3</span></div>
-        <div>Time: <span id="time">15</span>s</div>
+        <div>Score: <span id="score" class="font-bold">0</span></div>
+        <div>High Score: <span id="highScore" class="font-bold">0</span></div>
+        <div>Lives: <span id="lives" class="font-bold">3</span></div>
+        <div>Time: <span id="time" class="font-bold">15</span>s</div>
       </div>
 
-      <div id="kanaCard" class="relative text-7xl font-bold py-10 rounded-xl glass transition">
-        <span id="kanaChar"></span>
-        <div id="romajiHint" class="absolute bottom-2 right-4 text-base text-white/70 hidden"></div>
+      <div class="progress-bar">
+        <div id="timeProgress" class="progress-fill" style="width: 100%"></div>
       </div>
 
-      <input id="userInput" type="text" placeholder="Type romaji here..." class="w-full p-4 rounded-lg bg-gray-800 text-white outline-none focus:ring-2 focus:ring-blue-500">
+      <div id="kanaCard" class="kana-card transition">
+        <span id="kanaChar" class="text-8xl font-bold japanese-font"></span>
+        <div id="romajiHint" class="hint-text hidden"></div>
+      </div>
 
-      <div id="resultMsg" class="text-xl font-semibold"></div>
+      <input id="userInput" type="text" placeholder="Type romaji here..." class="w-full p-4 rounded-xl bg-gray-900 text-white outline-none focus:ring-2 focus:ring-yellow-500 border border-gray-700">
 
-      <div class="space-x-4">
-        <button onclick="restartGame()" class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded-xl">Restart</button>
-        <button onclick="goBack()" class="bg-red-600 hover:bg-red-500 px-4 py-2 rounded-xl">Back</button>
+      <div id="resultMsg" class="text-xl font-semibold min-h-[32px]"></div>
+
+      <div class="flex flex-wrap justify-center gap-4">
+        <button onclick="restartGame()" class="action-btn px-6 py-3 rounded-xl font-medium">
+          <i class="fas fa-rotate mr-2"></i>Restart
+        </button>
+        <button onclick="goBack()" class="action-btn px-6 py-3 rounded-xl font-medium">
+          <i class="fas fa-arrow-left mr-2"></i>Back
+        </button>
+        <button onclick="toggleHint()" id="hintBtn" class="action-btn px-6 py-3 rounded-xl font-medium">
+          <i class="fas fa-lightbulb mr-2"></i>Hint
+        </button>
+      </div>
+    </div>
+
+    <div id="vocabContainer" class="hidden glass p-8 space-y-8">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div class="flex-1 w-full sm:w-auto">
+          <label for="lessonSelector" class="text-gray-400 text-sm">Select Lesson:</label>
+          <select id="lessonSelector" class="bg-gray-900 p-3 rounded-xl w-full mt-1 focus:ring-2 focus:ring-yellow-500 border border-gray-700">
+            <option value="1">Lesson 1: Greetings</option>
+            <option value="2">Lesson 2: Common Phrases</option>
+            <option value="3">Lesson 3: Food & Dining</option>
+            <option value="4">Lesson 4: Travel</option>
+            <option value="5">Lesson 5: Shopping</option>
+          </select>
+        </div>
+        
+        <div class="flex-1 w-full sm:w-auto">
+          <label for="vocabSearch" class="text-gray-400 text-sm">Search Vocabulary:</label>
+          <div class="relative mt-1">
+            <input id="vocabSearch" type="text" placeholder="Search..." class="w-full p-3 pl-10 rounded-xl bg-gray-900 outline-none focus:ring-2 focus:ring-yellow-500 border border-gray-700">
+            <i class="fas fa-search absolute left-3 top-3.5 text-gray-500"></i>
+          </div>
+        </div>
+        
+        <button onclick="goBack()" class="action-btn px-6 py-3 rounded-xl font-medium sm:self-start mt-auto">
+          <i class="fas fa-arrow-left mr-2"></i>Back
+        </button>
+      </div>
+
+      <div class="toggle-container">
+        <span class="toggle-label">Study Mode</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="viewToggle" onchange="toggleViewMode()">
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="toggle-label">List View</span>
+      </div>
+
+      <div id="studyMode">
+        <div class="text-center mt-6">
+          <div id="vocabCard" class="vocab-card glass mx-auto max-w-sm sm:max-w-md" onclick="flipCard()">
+            <div class="card-inner">
+              <div class="card-front">
+                <div id="vocabFront" class="japanese-text"></div>
+                <div class="flip-icon"><i class="fas fa-sync-alt mr-1"></i> Click to flip</div>
+              </div>
+              <div class="card-back">
+                <div id="vocabBack" class="meaning-text"></div>
+                <div id="vocabReading" class="reading-text"></div>
+                <div class="flip-icon"><i class="fas fa-sync-alt mr-1"></i> Click to flip</div>
+              </div>
+            </div>
+          </div>
+          <div id="progressInfo" class="text-sm text-white/60 mt-3">Progress: <span id="vocabProgress">0 / 0</span></div>
+        </div>
+
+        <div class="vocab-actions">
+          <button onclick="prevVocab()" class="action-btn">
+            <i class="fas fa-arrow-left"></i>
+            <span class="ml-2 hidden sm:inline">Previous</span>
+          </button>
+          
+          <button onclick="nextVocab()" class="action-btn">
+            <i class="fas fa-arrow-right"></i>
+            <span class="ml-2 hidden sm:inline">Next</span>
+          </button>
+          <button onclick="toggleSaveCard()" id="saveBtn" class="action-btn">
+            <i class="far fa-bookmark"></i>
+            <span class="ml-2 hidden sm:inline">Save</span>
+          </button>
+          
+          <button onclick="shuffleVocab()" class="action-btn">
+            <i class="fas fa-random"></i>
+            <span class="ml-2 hidden sm:inline">Shuffle</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="listMode" class="hidden">
+        <div class="vocab-list-container" id="vocabList">
+          <!-- Vocabulary list will be populated here -->
+        </div>
+      </div>
+
+      <div class="mt-8">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-lg font-semibold flex items-center">
+            <i class="fas fa-bookmark mr-2 text-yellow-500"></i> Saved Cards
+            <span id="savedCount" class="ml-2 text-sm bg-yellow-900 rounded-full px-2 py-0.5">0</span>
+          </h2>
+          <button onclick="clearSavedCards()" class="action-btn bg-transparent hover:bg-gray-800 text-gray-400 hover:text-red-400 text-sm px-3 py-1.5 rounded-lg">
+            <i class="fas fa-trash-alt mr-1"></i> Clear All
+          </button>
+        </div>
+        <div id="savedCardList" class="saved-container space-y-3"></div>
       </div>
     </div>
   </div>
 
-  <!-- Sound Effects -->
   <audio id="correctSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
   <audio id="wrongSound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
   <audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-28.mp3"></audio>
-  
-  <script src="script.js"></script>
+  <audio id="vocabAudio"></audio>
+
+  <script>
+    // === Constants and Data ===
+    const hiraganaBasic = [['あ','a'],['い','i'],['う','u'],['え','e'],['お','o'],['か','ka'],['き','ki'],['く','ku'],['け','ke'],['こ','ko'],['さ','sa'],['し','shi'],['す','su'],['せ','se'],['そ','so'],['た','ta'],['ち','chi'],['つ','tsu'],['て','te'],['と','to'],['な','na'],['に','ni'],['ぬ','nu'],['ね','ne'],['の','no'],['は','ha'],['ひ','hi'],['ふ','fu'],['へ','he'],['ほ','ho'],['ま','ma'],['み','mi'],['む','mu'],['め','me'],['も','mo'],['や','ya'],['ゆ','yu'],['よ','yo'],['ら','ra'],['り','ri'],['る','ru'],['れ','re'],['ろ','ro'],['わ','wa'],['を','wo'],['ん','n']];
+    
+    const hiraganaDakuten = [['が','ga'],['ぎ','gi'],['ぐ','gu'],['げ','ge'],['ご','go'],['ざ','za'],['じ','ji'],['ず','zu'],['ぜ','ze'],['ぞ','zo'],['だ','da'],['ぢ','ji'],['づ','zu'],['で','de'],['ど','do'],['ば','ba'],['び','bi'],['ぶ','bu'],['べ','be'],['ぼ','bo'],['ぱ','pa'],['ぴ','pi'],['ぷ','pu'],['ぺ','pe'],['ぽ','po']];
+    
+    const hiraganaYouon = [['きゃ','kya'],['きゅ','kyu'],['きょ','kyo'],['しゃ','sha'],['しゅ','shu'],['しょ','sho'],['ちゃ','cha'],['ちゅ','chu'],['ちょ','cho'],['にゃ','nya'],['にゅ','nyu'],['にょ','nyo'],['ひゃ','hya'],['ひゅ','hyu'],['ひょ','hyo'],['みゃ','mya'],['みゅ','myu'],['みょ','myo'],['りゃ','rya'],['りゅ','ryu'],['りょ','ryo'],['ぎゃ','gya'],['ぎゅ','gyu'],['ぎょ','gyo'],['じゃ','ja'],['じゅ','ju'],['じょ','jo'],['びゃ','bya'],['びゅ','byu'],['びょ','byo'],['ぴゃ','pya'],['ぴゅ','pyu'],['ぴょ','pyo']];
+    
+    const kanaToKatakana = kana => kana.replace(/./g, ch => String.fromCharCode(ch.charCodeAt(0) + 0x60));
+    
+    const katakanaBasic = hiraganaBasic.map(([k, r]) => [kanaToKatakana(k), r]);
+    const katakanaDakuten = hiraganaDakuten.map(([k, r]) => [kanaToKatakana(k), r]);
+    const katakanaYouon = hiraganaYouon.map(([k, r]) => [kanaToKatakana(k), r]);
+
+    // Vocabulary data for different lessons
+    const vocabData = {
+      1: [ // Greetings
+        { ja: 'こんにちは', romaji: 'konnichiwa', en: 'Hello', bn: 'হ্যালো' },
+        { ja: 'おはようございます', romaji: 'ohayou gozaimasu', en: 'Good morning', bn: 'সুপ্রভাত' },
+        { ja: 'こんばんは', romaji: 'konbanwa', en: 'Good evening', bn: 'শুভ সন্ধ্যা' },
+        { ja: 'さようなら', romaji: 'sayounara', en: 'Goodbye', bn: 'বিদায়' },
+        { ja: 'ありがとう', romaji: 'arigatou', en: 'Thank you', bn: 'ধন্যবাদ' },
+        { ja: 'すみません', romaji: 'sumimasen', en: 'Excuse me / Sorry', bn: 'মাফ করবেন' },
+        { ja: 'おやすみなさい', romaji: 'oyasuminasai', en: 'Good night', bn: 'শুভ রাত্রি' },
+        { ja: 'はじめまして', romaji: 'hajimemashite', en: 'Nice to meet you', bn: 'আপনার সাথে পরিচয়ে ভালো লাগলো' }
+      ],
+      2: [ // Common Phrases
+        { ja: 'はい', romaji: 'hai', en: 'Yes', bn: 'হ্যাঁ' },
+        { ja: 'いいえ', romaji: 'iie', en: 'No', bn: 'না' },
+        { ja: 'おねがいします', romaji: 'onegaishimasu', en: 'Please', bn: 'অনুগ্রহ করে' },
+        { ja: 'どういたしまして', romaji: 'douitashimashite', en: 'You\'re welcome', bn: 'আপনাকে স্বাগতম' },
+        { ja: 'ごめんなさい', romaji: 'gomennasai', en: 'I\'m sorry', bn: 'আমি দুঃখিত' },
+        { ja: 'わかりません', romaji: 'wakarimasen', en: 'I don\'t understand', bn: 'আমি বুঝতে পারছি না' },
+        { ja: 'おげんきですか', romaji: 'ogenki desu ka', en: 'How are you?', bn: 'আপনি কেমন আছেন?' },
+        { ja: 'げんきです', romaji: 'genki desu', en: 'I\'m fine', bn: 'আমি ভালো আছি' }
+      ],
+      3: [ // Food & Dining
+        { ja: 'たべもの', romaji: 'tabemono', en: 'Food', bn: 'খাবার' },
+        { ja: 'みず', romaji: 'mizu', en: 'Water', bn: 'পানি' },
+        { ja: 'ごはん', romaji: 'gohan', en: 'Rice / Meal', bn: 'ভাত / খাবার' },
+        { ja: 'さかな', romaji: 'sakana', en: 'Fish', bn: 'মাছ' },
+        { ja: 'にく', romaji: 'niku', en: 'Meat', bn: 'মাংস' },
+        { ja: 'やさい', romaji: 'yasai', en: 'Vegetables', bn: 'সবজি' },
+        { ja: 'くだもの', romaji: 'kudamono', en: 'Fruit', bn: 'ফল' },
+        { ja: 'りょうり', romaji: 'ryouri', en: 'Cooking', bn: 'রান্না' },
+        { ja: 'レストラン', romaji: 'resutoran', en: 'Restaurant', bn: 'রেস্তোরাঁ' }
+      ],
+      4: [ // Travel
+        { ja: 'りょこう', romaji: 'ryokou', en: 'Travel', bn: 'ভ্রমণ' },
+        { ja: 'ひこうき', romaji: 'hikouki', en: 'Airplane', bn: 'বিমান' },
+        { ja: 'でんしゃ', romaji: 'densha', en: 'Train', bn: 'ট্রেন' },
+        { ja: 'バス', romaji: 'basu', en: 'Bus', bn: 'বাস' },
+        { ja: 'ホテル', romaji: 'hoteru', en: 'Hotel', bn: 'হোটেল' },
+        { ja: 'ちず', romaji: 'chizu', en: 'Map', bn: 'মানচিত্র' },
+        { ja: 'けんぶつ', romaji: 'kenbutsu', en: 'Sightseeing', bn: 'দর্শনীয় স্থান' },
+        { ja: 'みせ', romaji: 'mise', en: 'Shop', bn: 'দোকান' }
+      ],
+      5: [ // Shopping
+        { ja: 'かいもの', romaji: 'kaimono', en: 'Shopping', bn: 'কেনাকাটা' },
+        { ja: 'おかね', romaji: 'okane', en: 'Money', bn: 'টাকা' },
+        { ja: 'ねだん', romaji: 'nedan', en: 'Price', bn: 'দাম' },
+        { ja: 'やすい', romaji: 'yasui', en: 'Cheap', bn: 'সস্তা' },
+        { ja: 'たかい', romaji: 'takai', en: 'Expensive', bn: 'দামী' },
+        { ja: 'クレジットカード', romaji: 'kurejitto kaado', en: 'Credit card', bn: 'ক্রেডিট কার্ড' },
+        { ja: 'うりば', romaji: 'uriba', en: 'Counter', bn: 'কাউন্টার' },
+        { ja: 'サイズ', romaji: 'saizu', en: 'Size', bn: 'আকার' }
+      ]
+    };
+
+    // === Global Variables ===
+    let currentGameMode = 0;
+    let kanaList = [], currentKana;
+    let score = 0, highScore = 0, lives = 3, timeLeft = 15, timer;
+    let gameOver = false;
+    
+    let currentVocab = [], currentVocabIndex = 0;
+    let savedVocab = JSON.parse(localStorage.getItem('savedVocab') || '[]');
+    let isListViewMode = false;
+
+    // === DOM Elements ===
+    const modeSelector = document.getElementById('modeSelector');
+    const gameContainer = document.getElementById('gameContainer');
+    const vocabContainer = document.getElementById('vocabContainer');
+    const kanaChar = document.getElementById('kanaChar');
+    const romajiHint = document.getElementById('romajiHint');
+    const userInput = document.getElementById('userInput');
+    const scoreDisplay = document.getElementById('score');
+    const highScoreDisplay = document.getElementById('highScore');
+    const livesDisplay = document.getElementById('lives');
+    const timeDisplay = document.getElementById('time');
+    const timeProgress = document.getElementById('timeProgress');
+    const resultMsg = document.getElementById('resultMsg');
+    const hintBtn = document.getElementById('hintBtn');
+    
+    const vocabFront = document.getElementById('vocabFront');
+    const vocabBack = document.getElementById('vocabBack');
+    const vocabReading = document.getElementById('vocabReading');
+    const vocabProgress = document.getElementById('vocabProgress');
+    const savedCardList = document.getElementById('savedCardList');
+    const vocabSearch = document.getElementById('vocabSearch');
+    const lessonSelector = document.getElementById('lessonSelector');
+    const vocabCard = document.getElementById('vocabCard');
+    const saveBtn = document.getElementById('saveBtn');
+    const savedCount = document.getElementById('savedCount');
+    const studyMode = document.getElementById('studyMode');
+    const listMode = document.getElementById('listMode');
+    const vocabList = document.getElementById('vocabList');
+    const viewToggle = document.getElementById('viewToggle');
+    
+    const correctSound = document.getElementById('correctSound');
+    const wrongSound = document.getElementById('wrongSound');
+    const clickSound = document.getElementById('clickSound');
+    const vocabAudio = document.getElementById('vocabAudio');
+
+    // === Utility Functions ===
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function playSound(el) {
+      el.currentTime = 0;
+      el.play().catch(e => console.log("Audio play failed:", e));
+    }
+
+    function pause(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    // === Kana Game Functions ===
+    function getKanaSet(mode) {
+      switch (mode) {
+        case 1: return hiraganaBasic;
+        case 2: return [...hiraganaBasic, ...hiraganaDakuten, ...hiraganaYouon];
+        case 3: return katakanaBasic;
+        case 4: return [...katakanaBasic, ...katakanaDakuten, ...katakanaYouon];
+        case 5: return shuffle([...hiraganaBasic, ...katakanaBasic]);
+        case 6: return shuffle([
+          ...hiraganaBasic, ...katakanaBasic, 
+          ...hiraganaDakuten, ...katakanaDakuten, 
+          ...hiraganaYouon, ...katakanaYouon
+        ]);
+        default: return hiraganaBasic;
+      }
+    }
+
+    function startGame(mode) {
+      playSound(clickSound);
+      currentGameMode = mode;
+      kanaList = shuffle([...getKanaSet(mode)]);
+      score = 0;
+      lives = 3;
+      timeLeft = 15;
+      gameOver = false;
+      
+      scoreDisplay.textContent = score;
+      livesDisplay.textContent = lives;
+      timeDisplay.textContent = timeLeft;
+      timeProgress.style.width = '100%';
+      resultMsg.textContent = '';
+      
+      modeSelector.classList.add('hidden');
+      gameContainer.classList.remove('hidden');
+      
+      nextQuestion();
+      startTimer();
+      userInput.focus();
+    }
+
+    function goBack() {
+      clearInterval(timer);
+      playSound(clickSound);
+      gameContainer.classList.add('hidden');
+      vocabContainer.classList.add('hidden');
+      modeSelector.classList.remove('hidden');
+    }
+
+    function restartGame() {
+      playSound(clickSound);
+      startGame(currentGameMode);
+    }
+
+    function startTimer() {
+      clearInterval(timer);
+      timer = setInterval(() => {
+        if (!gameOver) {
+          timeLeft--;
+          timeDisplay.textContent = timeLeft;
+          timeProgress.style.width = `${(timeLeft / 15) * 100}%`;
+          
+          if (timeLeft <= 0) {
+            clearInterval(timer);
+            handleIncorrect();
+          }
+          
+          // Flash warning when time is low
+          if (timeLeft <= 5) {
+            timeDisplay.classList.add('text-red-400', 'pulse');
+          } else {
+            timeDisplay.classList.remove('text-red-400', 'pulse');
+          }
+        }
+      }, 1000);
+    }
+
+    function nextQuestion() {
+      if (kanaList.length === 0) kanaList = shuffle([...getKanaSet(currentGameMode)]);
+      currentKana = kanaList.pop();
+      kanaChar.textContent = currentKana[0];
+      romajiHint.classList.add('hidden');
+      userInput.value = '';
+      resultMsg.textContent = '';
+      timeLeft = 15;
+      timeDisplay.textContent = timeLeft;
+      timeProgress.style.width = '100%';
+      startTimer();
+    }
+
+    function toggleHint() {
+      romajiHint.textContent = currentKana[1];
+      romajiHint.classList.toggle('hidden');
+      playSound(clickSound);
+    }
+
+    async function handleCorrect() {
+      playSound(correctSound);
+      const card = document.getElementById('kanaCard');
+      card.classList.add('flash-green');
+      romajiHint.textContent = currentKana[1];
+      romajiHint.classList.remove('hidden');
+      
+      score++;
+      if (score > highScore) {
+        highScore = score;
+        highScoreDisplay.textContent = highScore;
+      }
+      scoreDisplay.textContent = score;
+      
+      resultMsg.textContent = '✅ Correct!';
+      resultMsg.classList.add('text-green-400');
+      
+      await pause(1000);
+      card.classList.remove('flash-green');
+      romajiHint.classList.add('hidden');
+      nextQuestion();
+    }
+
+    async function handleIncorrect() {
+      clearInterval(timer);
+      if (gameOver) return;
+      
+      playSound(wrongSound);
+      const card = document.getElementById('kanaCard');
+      card.classList.add('flash-red', 'shake');
+      romajiHint.textContent = currentKana[1];
+      romajiHint.classList.remove('hidden');
+      
+      lives = Math.max(0, lives - 1);
+      livesDisplay.textContent = lives;
+      
+      resultMsg.textContent = `❌ Correct: ${currentKana[1]}`;
+      resultMsg.classList.add('text-red-400');
+      
+      await pause(1200);
+      card.classList.remove('flash-red', 'shake');
+      romajiHint.classList.add('hidden');
+      
+      if (lives <= 0) {
+        gameOver = true;
+        kanaChar.textContent = 'Game Over';
+        resultMsg.textContent = `Final Score: ${score}`;
+      } else {
+        nextQuestion();
+      }
+    }
+
+    userInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !gameOver) {
+        const userAnswer = this.value.trim().toLowerCase();
+        if (userAnswer === currentKana[1]) {
+          handleCorrect();
+        } else {
+          handleIncorrect();
+        }
+      }
+    });
+
+    // === Vocabulary Functions ===
+    function showVocabMode() {
+      playSound(clickSound);
+      modeSelector.classList.add('hidden');
+      vocabContainer.classList.remove('hidden');
+      loadVocab();
+    }
+
+    function loadVocab() {
+      const lesson = lessonSelector.value;
+      currentVocab = [...vocabData[lesson]];
+      currentVocabIndex = 0;
+      showVocabCard();
+      updateVocabList();
+      updateSavedList();
+    }
+
+    function showVocabCard() {
+      const card = currentVocab[currentVocabIndex];
+      if (!card) {
+        vocabFront.textContent = 'No results found.';
+        vocabBack.textContent = '';
+        vocabReading.textContent = '';
+        return;
+      }
+      
+      vocabFront.textContent = card.ja;
+      vocabBack.textContent = `${card.en}`;
+      vocabReading.textContent = `"${card.romaji}"`;
+      
+      vocabCard.classList.remove('vocab-flipped');
+      
+      vocabProgress.textContent = `${currentVocabIndex + 1} / ${currentVocab.length}`;
+      
+      const isSaved = savedVocab.some(v => v.ja === card.ja);
+      saveBtn.innerHTML = isSaved 
+        ? '<i class="fas fa-bookmark mr-1"></i> Saved' 
+        : '<i class="far fa-bookmark mr-1"></i> Save';
+      saveBtn.classList.toggle('bg-gradient-to-r', !isSaved);
+      saveBtn.classList.toggle('from-green-600', !isSaved);
+      saveBtn.classList.toggle('to-green-700', !isSaved);
+      saveBtn.classList.toggle('bg-gradient-to-r', isSaved);
+      saveBtn.classList.toggle('from-gray-600', isSaved);
+      saveBtn.classList.toggle('to-gray-700', isSaved);
+    }
+
+    function flipCard() {
+      playSound(clickSound);
+      vocabCard.classList.toggle('vocab-flipped');
+    }
+
+    function nextVocab() {
+      playSound(clickSound);
+      if (currentVocab.length === 0) return;
+      currentVocabIndex = (currentVocabIndex + 1) % currentVocab.length;
+      showVocabCard();
+    }
+
+    function prevVocab() {
+      playSound(clickSound);
+      if (currentVocab.length === 0) return;
+      currentVocabIndex = (currentVocabIndex - 1 + currentVocab.length) % currentVocab.length;
+      showVocabCard();
+    }
+
+    function toggleSaveCard() {
+      playSound(clickSound);
+      const card = currentVocab[currentVocabIndex];
+      if (!card) return;
+      const index = savedVocab.findIndex(v => v.ja === card.ja);
+      
+      if (index >= 0) {
+        savedVocab.splice(index, 1);
+      } else {
+        savedVocab.push(card);
+      }
+      
+      localStorage.setItem('savedVocab', JSON.stringify(savedVocab));
+      updateSavedList();
+      showVocabCard();
+    }
+
+    function updateSavedList() {
+      savedCardList.innerHTML = '';
+      savedCount.textContent = savedVocab.length;
+      
+      if (savedVocab.length === 0) {
+        savedCardList.innerHTML = '<div class="text-gray-500 text-center py-4">No saved cards yet</div>';
+        return;
+      }
+      
+      savedVocab.forEach((card, index) => {
+        const cardElement = document.createElement('div');
+        cardElement.className = 'saved-card glass p-4 rounded-lg flex justify-between items-center';
+        cardElement.innerHTML = `
+          <div>
+            <div class="font-medium">${card.ja}</div>
+            <div class="text-sm text-gray-400">${card.en}</div>
+          </div>
+          <button onclick="removeSavedCard(event, ${index})" class="text-red-400 hover:text-red-300">
+            <i class="fas fa-times"></i>
+          </button>
+        `;
+        cardElement.addEventListener('click', () => {
+          const cardIndex = currentVocab.findIndex(c => c.ja === card.ja);
+          if (cardIndex !== -1) {
+            currentVocabIndex = cardIndex;
+            showVocabCard();
+            toggleViewMode(false); // Switch to study mode
+          }
+        });
+        savedCardList.appendChild(cardElement);
+      });
+    }
+    
+    function removeSavedCard(event, index) {
+      event.stopPropagation(); // Prevents card click event from firing
+      savedVocab.splice(index, 1);
+      localStorage.setItem('savedVocab', JSON.stringify(savedVocab));
+      updateSavedList();
+      showVocabCard();
+    }
+
+    function clearSavedCards() {
+      if (confirm("Are you sure you want to clear all saved cards?")) {
+        savedVocab = [];
+        localStorage.removeItem('savedVocab');
+        updateSavedList();
+        playSound(clickSound);
+      }
+    }
+
+    function shuffleVocab() {
+      playSound(clickSound);
+      currentVocab = shuffle(currentVocab);
+      currentVocabIndex = 0;
+      showVocabCard();
+      updateVocabList();
+    }
+
+    function playPronunciation() {
+      playSound(clickSound);
+      const card = currentVocab[currentVocabIndex];
+      if (card && card.romaji) {
+        vocabAudio.src = `https://translate.google.com/translate_tts?ie=UTF-8&tl=ja&q=${encodeURIComponent(card.ja)}&client=tw-ob`;
+        vocabAudio.play().catch(e => {
+          console.log("Audio play failed:", e);
+          alert("Audio playback failed. Please try again later.");
+        });
+      }
+    }
+
+    function toggleViewMode(animate = true) {
+      isListViewMode = viewToggle.checked;
+      
+      if (animate) {
+        playSound(clickSound);
+      }
+      
+      if (isListViewMode) {
+        studyMode.classList.add('hidden');
+        listMode.classList.remove('hidden');
+        updateVocabList();
+      } else {
+        studyMode.classList.remove('hidden');
+        listMode.classList.add('hidden');
+      }
+    }
+
+    function updateVocabList() {
+      vocabList.innerHTML = '';
+      
+      if (currentVocab.length === 0) {
+        vocabList.innerHTML = '<div class="text-gray-500 text-center py-4">No vocabulary found</div>';
+        return;
+      }
+      
+      currentVocab.forEach((card, index) => {
+        const isCurrent = index === currentVocabIndex;
+        const itemElement = document.createElement('div');
+        itemElement.className = `vocab-list-item ${isCurrent ? 'border-l-4 border-yellow-500' : ''}`;
+        itemElement.innerHTML = `
+          <div class="vocab-list-japanese">${card.ja}</div>
+          <div class="vocab-list-info">
+            <div class="vocab-list-romaji">${card.romaji}</div>
+            <div class="vocab-list-meaning">${card.en}</div>
+          </div>
+        `;
+        
+        itemElement.addEventListener('click', () => {
+          currentVocabIndex = index;
+          showVocabCard();
+          toggleViewMode(false); // Switch to study mode
+        });
+        
+        vocabList.appendChild(itemElement);
+      });
+    }
+
+    vocabSearch.addEventListener('input', () => {
+      const term = vocabSearch.value.trim().toLowerCase();
+      const lesson = lessonSelector.value;
+      const originalVocab = vocabData[lesson];
+      
+      if (!term) {
+        currentVocab = [...originalVocab];
+      } else {
+        currentVocab = originalVocab.filter(card => 
+          card.ja.includes(term) || 
+          card.romaji.includes(term) || 
+          card.en.toLowerCase().includes(term) ||
+          card.bn.includes(term)
+        );
+      }
+      
+      currentVocabIndex = 0;
+      showVocabCard();
+      updateVocabList();
+    });
+
+    lessonSelector.addEventListener('change', loadVocab);
+
+    document.addEventListener('DOMContentLoaded', () => {
+      highScore = parseInt(localStorage.getItem('kanaHighScore') || '0');
+      highScoreDisplay.textContent = highScore;
+      updateSavedList();
+    });
+
+    window.addEventListener('beforeunload', () => {
+      localStorage.setItem('kanaHighScore', highScore.toString());
+    });
+  </script>
 </body>
 </html>
